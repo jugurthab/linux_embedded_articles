@@ -2,16 +2,11 @@
 #include "timemgr.h"
 
 int main(){
-    struct timespec clockRes;
-    struct timeval tsMicroSec;
-
-    clockRes = getClockPrecision(CLOCK_REALTIME);
-    tsMicroSec = getCurrentTimestampU();
-
-    printf("Timestamp sec=%ld, usec=%ld\n", (long)tsMicroSec.tv_sec,
-            (long)tsMicroSec.tv_usec);
-    printf("Clock Resolution sec=%ld nsec=%ld\n",
-            (long)clockRes.tv_sec, (long)clockRes.tv_nsec);
+ 
+    printf ("La date : %s\n", getCurrentTimestamp());
+    
+    // Used to compare timestamp with old binary
+    printf("Le timestamp : %ld\n", time(NULL));
 
     return 0;
 }

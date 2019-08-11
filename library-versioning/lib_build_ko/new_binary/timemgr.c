@@ -1,11 +1,10 @@
 #include "timemgr.h"
 
-struct timeval getCurrentTimestampU(){
-    struct timeval tsMicroSec;
-    
-    gettimeofday(&tsMicroSec, NULL);
+char * getCurrentTimestamp(){
+    time_t curTime;
+    time(&curTime);
 
-    return tsMicroSec;
+    return (ctime(&curTime));
 }
 
 struct timespec getClockPrecision(clockid_t clockId){
