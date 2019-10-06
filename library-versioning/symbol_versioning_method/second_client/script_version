@@ -1,0 +1,13 @@
+NBGENERATOR_1.0{
+    global:
+        getPseudoNumber;
+    local:
+        *;
+};
+
+NBGENERATOR_1.1{
+    global:
+        getRandomPassword;
+    local:
+        *;
+};
