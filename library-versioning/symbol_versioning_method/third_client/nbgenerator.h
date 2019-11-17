@@ -8,6 +8,7 @@
 
 #define DEFAULT_MAX_NUMBER_LIMIT 1000
 #define MAX_PASSWORD_LENGTH 20
+#define ENCRYPTION_CIPHER_METHOD "crypt"
 
 struct PasswordHash{
     char hashNameFunc[20];

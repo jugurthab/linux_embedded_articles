@@ -37,11 +37,15 @@ char* getRandomPassword_1_1(int nbCharacters){
 /* @@ means default use this for new binaries */
 __asm__(".symver getRandomPassword_2_0,getRandomPassword@@NBGENERATOR_2.0");
 struct PasswordHash getRandomPassword_2_0(int nbCharacters){
-    char *passwordToHash = generationMotDePasse(10);
-    char *passwordSalt = generationMotDePasse(3);
+    char passwordToHash[MAX_PASSWORD_LENGTH];
+    char passwordSalt[6];
     
-    sprintf(passHash.hashNameFunc, "%s", "crypt");
-    passHash.passwordToHash = passwordToHash;            
+    strcpy(passwordToHash, generationMotDePasse(10));
+    
+    // $1$ allows to select md5 hashing algorithm    
+    sprintf(passwordSalt, "$6$%s", generationMotDePasse(6));
+
+    sprintf(passHash.hashNameFunc, "%s", ENCRYPTION_CIPHER_METHOD);
     
     /* Crypt returns a hash based on DES encryption */
     passHash.hashedPassword = crypt(passwordToHash, passwordSalt);
