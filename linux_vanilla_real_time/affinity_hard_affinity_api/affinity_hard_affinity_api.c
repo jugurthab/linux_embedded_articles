@@ -1,26 +1,25 @@
-// getAffinityReturnValue() and set_process_affinity()
-// are GNU extensions.
 #define _GNU_SOURCE
+// getAffinityReturnValue() et set_process_affinity()
+// sont des extensions GNU.
 #include <stdio.h>
 #include <stdlib.h>
 #include <sched.h>
 
-cpu_set_t cpuSet; // Store current process affinity.
+cpu_set_t cpuSet; // stocker l'affinité du processus.
 
 void get_process_affinity(){
-    int getAffinityReturnValue, i;
+    int i = 0;
+    // Remise à zéro avant lecture de l'affinité.
+    CPU_ZERO(&cpuSet);
 
-    CPU_ZERO(&cpuSet); // Empty cpuSet from previous usage.
-
-    // Retrieve affinity for current process
-    getAffinityReturnValue = sched_getaffinity(0,
-                              sizeof(cpu_set_t), &cpuSet);
-
-    if(getAffinityReturnValue == -1){
+    // sched_getaffinity retourne l'affinité d'un processus
+    // 0 : représente le processus en cours.
+    if(sched_getaffinity(0,
+                sizeof(cpu_set_t), &cpuSet) == -1){
         perror("sched_getaffinity");
     }
 
-    // List CPUs on which current process is allowed to run.
+    // Affichage de l'affinité.
     for(i = 0; i < CPU_SETSIZE; i++) {
         int isCPUSet = CPU_ISSET(i, &cpuSet);
         if(isCPUSet){
@@ -31,39 +30,37 @@ void get_process_affinity(){
 }
 
 void set_process_affinity(){
-    int setAffinityReturnValue;
-
     /*
-    *  clears all CPUs (by default, it disallow
-    *  affinity on all CPUs).
+    *  Remise à zéro de l'affinité.
     */
     CPU_ZERO(&cpuSet);
-    /* Allow process to run on
-    CPU0 and CPU1 */
+    // Autoriser l'affinité sur les CPU1 et CPU2.
     CPU_SET(0, &cpuSet);
     CPU_SET(1, &cpuSet);
 
-    /* Disallow explicitly process to run on CPU2.
-    *  Because CPU_ZERO() already disallowed it by default.
+    /* Interdire explicitement l'affinité sur les CPU3 et CPU4.
+    *  (CPU_ZERO() interdit tout les CPU).
     */
     CPU_CLR(2, &cpuSet);
 
-    setAffinityReturnValue = sched_setaffinity(0,
-                                sizeof(cpu_set_t), &cpuSet);
-    if(setAffinityReturnValue == -1){
+    // Appliquer les nouvelles régles d'affinité.
+    if( sched_setaffinity(0,
+           sizeof(cpu_set_t), &cpuSet) == -1 ){
         perror("sched_setaffinity");
+    } else {
+        printf("-------------------------------------\n");
+        printf("--- CPU Affinity has been changed ---\n");
+        printf("-------------------------------------\n");
     }
-    printf("-------------------------------------\n");
-    printf("--- CPU Affinity has been changed ---\n");
-    printf("-------------------------------------\n");
 }
 
 int main(int argc, char *argv[]){
-    get_process_affinity(); // Reads intial affinity
+    get_process_affinity(); // Lecture de l'affinité initiale.
 
-    set_process_affinity(); // Changes affinity to CPU0 and CPU1
+    // Forcer l'affinité sur le CPU0 et CPU1.
+    set_process_affinity();
 
-    get_process_affinity(); // Reads new affinity
+    get_process_affinity(); // Relecture de l'affinité.
 
     return EXIT_SUCCESS;
 }

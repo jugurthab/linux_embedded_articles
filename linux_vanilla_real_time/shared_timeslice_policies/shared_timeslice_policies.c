@@ -42,8 +42,8 @@ void display_process_sched_attributes(){
 }
 
 int main(int argc, char *argv[]){
-    int t;
     struct sched_param sched_p;
+
     // Affiche la politique d'ordonnancement.
     display_process_sched_attributes();
 
@@ -57,6 +57,8 @@ int main(int argc, char *argv[]){
     */ 
     if(sched_setscheduler(0, SCHED_BATCH, &sched_p) == -1)
         perror ("sched_setscheduler ");
+    else
+        printf("------ Scheduling policy updated ------\n");
 
     display_process_sched_attributes();
 
