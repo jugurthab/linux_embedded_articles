@@ -29,14 +29,14 @@ void printUsage(){
 void aio_handler(int signal, siginfo_t *info, void*uap)
 {
 	int cbNumber = info->si_value.sival_int;
-	if(cbNumber==0){ // Si l'écriture est achevée.
+	if(cbNumber==0) { // Si l'écriture est achevée.
 		printf("AIO wrote %s completed to file %s\n",
-				bufToWriteOut, FILENAME);
+		       bufToWriteOut, FILENAME);
 		aio_read(&cb[1]); // Lancer la lecture.
 	}
 	else{ // Si l'écriture est terminée.
-		printf("AIO read %s from file %s\n", 
-			bufToReadIn, FILENAME);
+		printf("AIO read %s from file %s\n",
+		       bufToReadIn, FILENAME);
 		fclose(file);
 		writeReadComplet = true; // Arrêter le programme.
 	}
@@ -44,19 +44,19 @@ void aio_handler(int signal, siginfo_t *info, void*uap)
 
 int main(int argc, char *argv[]){
 	struct sigaction action;
-	
-	if(argc != 2){
+
+	if(argc != 2) {
 		printUsage();
 	}
 	memset(bufToWriteOut, '\0', MAX_USER_INPUT_STRING_LENGTH);
 	memset(bufToReadIn, '\0', MAX_USER_INPUT_STRING_LENGTH);
-	
+
 	// Récupérer la chaine de charactères utilisateur.
 	snprintf(bufToWriteOut, MAX_USER_INPUT_STRING_LENGTH, argv[1]);
 	file = fopen(FILENAME, "w+");
-	
+
 	// Configuration des IOs asynchrones.
-	for(int i = 0; i < MAX_AIOCB_OPERATIONS; i++){
+	for(int i = 0; i < MAX_AIOCB_OPERATIONS; i++) {
 		cb[i].aio_fildes = fileno(file);
 		if(i==0) // Le cas d'une écriture
 			cb[i].aio_buf = bufToWriteOut;
@@ -70,15 +70,15 @@ int main(int argc, char *argv[]){
 		cb[i].aio_sigevent.sigev_signo = SIGIO;
 		cb[i].aio_sigevent.sigev_value.sival_int = i;
 	}
-	
+
 	sigaction(SIGIO, &action, NULL);
-	
+
 	aio_write(&cb[0]); // Lancer l'écriture
 
 	// En production, la boucle doit être remplacée car le but
 	// des IO asynchrones est de permettre au programme de continuer
 	// son cycle de vie sans aucun bloquage.
-	while(!writeReadComplet){sleep(1);}
+	while(!writeReadComplet) {sleep(1);}
 
 	return EXIT_SUCCESS;
 }

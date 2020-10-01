@@ -23,14 +23,14 @@ void applyXorCipher(char dataToEncrypt[]){
 }
 
 void loadFileContent(char noEnryptionBuf[],
-					 char caesarEnryptionBuf[],
-					 char xorEnryptionBuf[]){
+                     char caesarEnryptionBuf[],
+                     char xorEnryptionBuf[]){
 	// Déclarer le nombre de scatter/gather.
 	struct iovec iov[MAX_NUMBER_SCATTER_GATHER];
 	ssize_t scatterGatherReturn;
 	int fd;
 	fd = open("data_input.txt", O_RDONLY);
-	if(fd == -1){
+	if(fd == -1) {
 		perror ("open");
 		exit(EXIT_FAILURE);
 	}
@@ -58,16 +58,16 @@ void loadFileContent(char noEnryptionBuf[],
 }
 
 void saveFileContent(char noEnryptionBuf[],
-					 char caesarEnryptionBuf[],
-					 char xorEnryptionBuf[]){
+                     char caesarEnryptionBuf[],
+                     char xorEnryptionBuf[]){
 	struct iovec iov[MAX_NUMBER_SCATTER_GATHER];
 	ssize_t scatterGatherReturn;
 	int fd;
 	fd = open("data_output.txt", O_WRONLY | O_CREAT | O_TRUNC,
-								S_IWUSR | S_IRUSR | S_IWGRP |
-								S_IRGRP | S_IROTH);
+	          S_IWUSR | S_IRUSR | S_IWGRP |
+	          S_IRGRP | S_IROTH);
 
-	if(fd == -1){
+	if(fd == -1) {
 		perror ("open");
 		exit(EXIT_FAILURE);
 	}
@@ -100,7 +100,7 @@ int main(int argc, char *argv[]){
 	// Stocke la 3ème ligne du fichier.
 	char xorEnryptionBuf[MAX_CHARS_IN_ROW_INPUT_FILE+1];
 
-	
+
 	memset(noEnryptionBuf, '\0', MAX_CHARS_IN_ROW_INPUT_FILE+1);
 	memset(caesarEnryptionBuf, '\0', MAX_CHARS_IN_ROW_INPUT_FILE+1);
 	memset(xorEnryptionBuf, '\0', MAX_CHARS_IN_ROW_INPUT_FILE+1);
